@@ -13,10 +13,20 @@ from tensorflow import keras
 import pickle
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
-from sklearn.feature_extraction.text import CountVectorizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from keras.preprocessing.text import Tokenizer
+import spacy
+from nltk.corpus import stopwords
 
 def find_features(document):
-    features = countvector.transform(document).toarray()
+    features = []
+    for i in document:
+        doc = spmodel(i.lower())
+        text = [j.lemma_ for j in doc if j.lemma_ not in stop_words]
+        features.append(text)
+        
+    features = tokenizer.texts_to_sequences(features)
+    features = pad_sequences(features, maxlen=136)
             
     return features
         
@@ -28,9 +38,9 @@ def find_cat():
     X = find_features(x)
     
     
-    y_pred = model.predict(X)
+    y_pred = model.predict(X, verbose=0)
     ans = np.argmax(y_pred, axis = 1)
-    ans = labencoder.classes_[ans]
+    ans = labelencoder.classes_[ans]
     
     show = ""
     
@@ -42,16 +52,17 @@ def find_cat():
 def clear():
     t1.delete(1.0, "end-1c")
     var.set("")
-    
-
+   
+ 
+spmodel = spacy.load("en_core_web_trf")
 model = keras.models.load_model("model.h5")
+stop_words = stopwords.words("english")
 
-with open("labelencoder.pickle", "rb") as file: 
-    labencoder= pickle.load(file)
+with open("tokenizer.pickle", "rb") as file: 
+    tokenizer= pickle.load(file)
     
-with open("countvector.pickle", "rb") as file:
-    countvector = pickle.load(file)
-    
+with open("labelencoder.pickle", "rb") as file:
+    labelencoder = pickle.load(file)
     
 window = Tk()
 window.geometry("850x900")
