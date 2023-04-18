@@ -46,14 +46,14 @@ def find_cat():
         show += str(i+1)+" "+ans[i]+"\n"
     
     var.set(show)
-  
+    
 def clear():
     t1.delete(1.0, "end-1c")
     var.set("")
    
  
 spmodel = spacy.load("en_core_web_trf")
-model = keras.models.load_model("model.h5")
+model = keras.models.load_model("3-conv128-3-dense256-1680808526-weighted.h5")
 stop_words = stopwords.words("english")
 
 with open("tokenizer.pickle", "rb") as file: 
